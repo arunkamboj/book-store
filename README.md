@@ -7,8 +7,7 @@ The project also includes an admin panel for managing products, stock, users, an
 ## Project Details
 
 **Project Title:** E-Commerce Website Development  
-**Student Name:** Aayush Kamboj  
-**Email:** aayushkamboj400@gmail.com  
+**Student Name:** Aayush  
 **Course:** BCA  
 **Database:** MySQL  
 **Backend:** Node.js, Express.js  

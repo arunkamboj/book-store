@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `bookstore_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE `bookstore_db`;
+CREATE DATABASE  IF NOT EXISTS `railway` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `railway`;
 -- MySQL dump 10.13  Distrib 8.0.46, for Win64 (x86_64)
 --
--- Host: localhost    Database: bookstore_db
+-- Host: localhost    Database: railway
 -- ------------------------------------------------------
 -- Server version	5.5.5-10.4.24-MariaDB
 
