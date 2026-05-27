@@ -1,10 +1,13 @@
 const Product = require("../models/product");
+const Order = require("../models/order");
+const User = require("../models/user");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
+    product: {},
   });
 };
 
@@ -34,12 +37,16 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
+  const category = req.body.category;
+  const stock = req.body.stock;
   const imageUrl = req.body.imageUrl;
   const description = req.body.description;
   const price = req.body.price;
   req.user
     .createProduct({
       title: title,
+      category: category || "Books",
+      stock: stock || 0,
       price: price,
       imageUrl: imageUrl,
       description: description,
@@ -59,6 +66,8 @@ exports.postEditProduct = (req, res, next) => {
   Product.findByPk(id)
     .then((product) => {
       product.title = req.body.title;
+      product.category = req.body.category || "Books";
+      product.stock = req.body.stock || 0;
       product.imageUrl = req.body.imageUrl;
       product.description = req.body.description;
       product.price = req.body.price;
@@ -70,6 +79,56 @@ exports.postEditProduct = (req, res, next) => {
     })
     .catch((error) =>
       console.log("Error in Admin Controller, postEditProduct: {}", error)
+    );
+};
+
+exports.getOrders = (req, res, next) => {
+  Order.findAll({
+    include: [
+      { model: Product },
+      { model: User },
+    ],
+    order: [["createdAt", "DESC"]],
+  })
+    .then((orders) => {
+      res.render("admin/orders", {
+        pageTitle: "Manage Orders",
+        path: "/admin/orders",
+        orders,
+      });
+    })
+    .catch((error) =>
+      console.log("Error in Admin Controller, getOrders: {}", error)
+    );
+};
+
+exports.postUpdateOrderStatus = (req, res, next) => {
+  Order.findByPk(req.body.orderId)
+    .then((order) => {
+      if (!order) {
+        return res.redirect("/admin/orders");
+      }
+
+      order.status = req.body.status || order.status;
+      return order.save();
+    })
+    .then(() => res.redirect("/admin/orders"))
+    .catch((error) =>
+      console.log("Error in Admin Controller, postUpdateOrderStatus: {}", error)
+    );
+};
+
+exports.getUsers = (req, res, next) => {
+  User.findAll({ order: [["createdAt", "DESC"]] })
+    .then((users) => {
+      res.render("admin/users", {
+        pageTitle: "Manage Users",
+        path: "/admin/users",
+        users,
+      });
+    })
+    .catch((error) =>
+      console.log("Error in Admin Controller, getUsers: {}", error)
     );
 };
 

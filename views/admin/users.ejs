@@ -1,0 +1,30 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/cart.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main class="cart-page">
+            <h1>Manage Users</h1>
+            <div class="orders-list">
+                <% users.forEach(user => { %>
+                    <article class="order-card">
+                        <header class="order-card__header">
+                            <div>
+                                <h2><%= user.name %></h2>
+                                <p><%= user.email %></p>
+                            </div>
+                            <div class="order-status"><%= user.isAdmin ? 'Admin' : 'Customer' %></div>
+                        </header>
+                        <p><%= user.addressLine1 || 'No address saved' %></p>
+                        <% if (user.city) { %>
+                            <p><%= user.city %>, <%= user.state %> <%= user.postalCode %></p>
+                        <% } %>
+                        <% if (user.phone) { %>
+                            <p>Phone: <%= user.phone %></p>
+                        <% } %>
+                    </article>
+                <% }) %>
+            </div>
+        </main>
+        <%- include('../includes/end.ejs') %>

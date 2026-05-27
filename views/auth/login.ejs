@@ -1,0 +1,26 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main>
+            <form class="product-form" action="/login" method="POST">
+                <h1>Login</h1>
+                <% if (errorMessage) { %>
+                    <p class="form-error"><%= errorMessage %></p>
+                <% } %>
+                <input type="hidden" name="returnTo" value="<%= returnTo %>">
+                <div class="form-control">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" value="<%= email %>" required>
+                </div>
+                <div class="form-control">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <button class="btn" type="submit">Login</button>
+                <p class="auth-switch">Need an account? <a href="/signup?returnTo=<%= encodeURIComponent(returnTo) %>">Create one</a></p>
+            </form>
+        </main>
+        <%- include('../includes/end.ejs') %>

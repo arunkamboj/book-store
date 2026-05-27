@@ -1,0 +1,30 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main>
+            <form class="product-form" action="/signup" method="POST">
+                <h1>Create Account</h1>
+                <% if (errorMessage) { %>
+                    <p class="form-error"><%= errorMessage %></p>
+                <% } %>
+                <input type="hidden" name="returnTo" value="<%= returnTo %>">
+                <div class="form-control">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" value="<%= name %>" required>
+                </div>
+                <div class="form-control">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" value="<%= email %>" required>
+                </div>
+                <div class="form-control">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" minlength="6" required>
+                </div>
+                <button class="btn" type="submit">Create Account</button>
+                <p class="auth-switch">Already have an account? <a href="/login?returnTo=<%= encodeURIComponent(returnTo) %>">Login</a></p>
+            </form>
+        </main>
+        <%- include('../includes/end.ejs') %>

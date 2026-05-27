@@ -4,28 +4,66 @@
 
     <body>
         <%- include('../includes/navigation.ejs') %>
-        <main>
-            <% if (products.length > 0) { %>
-                <ul class="cart__item-list">
-                    <% products.forEach(p => { %>
-                        <li class="cart__item">
-                            <h1><%= p.title %></h1>
-                            <h2>Quantity: <%= p.cartItem.quantity %></h2>
-                            <form action="/cart-delete-item" method="POST">
-                                <input type="hidden" value="<%= p.id %>" name="productId">
-                                <button class="btn danger" type="submit">Delete</button>
-                            </form>
-                        </li>
-                    <% }) %>
-                </ul>
-                <hr>
-                <div class="centered">
-                    <form action="/create-order" method="POST">
-                        <button type="submit" class="btn">Order Now!</button> 
-                    </form>
+        <main class="cart-page">
+            <section class="checkout-layout">
+                <div class="checkout-main">
+                    <h1>Your Cart</h1>
+                    <% if (products.length > 0) { %>
+                        <ul class="cart__item-list">
+                            <% products.forEach(p => { %>
+                                <li class="cart__item">
+                                    <img class="cart__image" src="<%= p.imageUrl %>" alt="<%= p.title %>">
+                                    <div class="cart__details">
+                                        <h2><%= p.title %></h2>
+                                        <p><%= p.description %></p>
+                                        <span>Available: <%= p.stock %></span>
+                                    </div>
+                                    <div class="cart__price">
+                                        <strong>$<%= (p.price * p.cartItem.quantity).toFixed(2) %></strong>
+                                        <small>$<%= Number(p.price).toFixed(2) %> each</small>
+                                        <form action="/cart-update-item" method="POST">
+                                            <input type="hidden" value="<%= p.id %>" name="productId">
+                                            <input class="quantity-input" type="number" name="quantity" min="1" max="<%= p.stock %>" value="<%= p.cartItem.quantity %>">
+                                            <button class="btn" type="submit">Update</button>
+                                        </form>
+                                        <form action="/cart-delete-item" method="POST">
+                                            <input type="hidden" value="<%= p.id %>" name="productId">
+                                            <button class="btn danger" type="submit">Remove</button>
+                                        </form>
+                                    </div>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <h1>No products in your cart</h1>
+                            <a class="btn" href="/collections">Browse Collections</a>
+                        </div>
+                    <% } %>
                 </div>
-            <% } else { %>
-                <h1>No Products in Cart!</h1>
-            <% } %>
+
+                <% if (products.length > 0) { %>
+                    <aside class="checkout-summary">
+                        <h2>Order Summary</h2>
+                        <div class="summary-row">
+                            <span>Items</span>
+                            <strong><%= products.reduce((count, p) => count + p.cartItem.quantity, 0) %></strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <strong>$<%= total.toFixed(2) %></strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <strong>Free</strong>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <strong>$<%= total.toFixed(2) %></strong>
+                        </div>
+                        <a class="btn checkout-btn" href="/address">Continue to Address</a>
+                    </aside>
+                <% } %>
+            </section>
         </main>
         <%- include('../includes/end.ejs') %>

@@ -1,169 +1,174 @@
-# Node.js E-commerce Application
+# BookStore E-Commerce Website
 
-This is an e-commerce store application built using Node.js, Express.js, and EJS. The application follows the MVC (Model-View-Controller) architecture and integrates RESTful APIs for efficient data handling. The application features dynamic routing, robust database interactions through Sequelize ORM, role-based user authentication, admin-driven product management, and customer-focused shopping cart functionalities.
+BookStore is a full-stack e-commerce web application developed as a BCA major project. The system provides an online shopping experience where customers can register, browse products, add items to a cart, enter a delivery address, pay through PayPal sandbox, and track their orders.
 
-## Table of Contents
+The project also includes an admin panel for managing products, stock, users, and order status.
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Database Configuration](#database-configuration)
-- [Running the Application](#running-the-application)
-- [Contributing](#contributing)
-- [License](#license)
+## Project Details
 
-## Features
+**Project Title:** E-Commerce Website Development  
+**Student Name:** Aayush Kamboj  
+**Email:** aayushkamboj400@gmail.com  
+**Course:** BCA  
+**Database:** MySQL  
+**Backend:** Node.js, Express.js  
+**Frontend:** HTML, CSS, JavaScript, EJS  
 
-- Role-based user authentication and authorization
-- Admin-driven product management
-- Customer-focused shopping cart functionality
-- Order management system
-- Dynamic routing and views rendered using EJS
-- Integration with MySQL database using Sequelize ORM
-- Logging with Morgan and request compression with compression
-- MVC architecture for clean and maintainable codebase
+## Main Features
 
-## Technologies Used
+- User registration and JWT-based login
+- Admin login and protected admin panel
+- Product listing with search and category filtering
+- Collection page with sorting, price filters, stock filter, and pagination
+- Product details page with customer reviews
+- Shopping cart with quantity update and remove option
+- Address page before checkout
+- PayPal sandbox payment integration
+- Order history and order tracking
+- Admin product add, edit, delete, stock management
+- Admin order management with status update
+- Admin user management
+- Professional home page with slider, featured products, categories, header, and footer
 
-- Node.js
-- Express.js
-- EJS (Embedded JavaScript templating)
-- Sequelize ORM
-- MySQL (AWS RDS)
-- Morgan (HTTP request logger middleware)
-- Compression (Gzip compression middleware)
+## User Modules
 
-## Prerequisites
+### Customer
 
-- Node.js installed on your machine
-- MySQL database (AWS RDS recommended)
-- Git for version control
+- Register a new account
+- Login and logout securely
+- Browse and search products
+- Browse collections with category, price, stock, sorting, and pagination
+- Add products to cart
+- Update product quantity in cart
+- Save profile and address details
+- Checkout using PayPal sandbox
+- View order history and payment details
+- Add reviews on products
 
-## Installation
+### Admin
 
-1. Clone the repository to your local machine:
+- Login with admin account
+- Add new products
+- Edit product details
+- Delete products
+- Manage product category and stock
+- View all orders
+- Update order status
+- View registered users
 
-    ```bash
-    git clone https://github.com/LahiruSen/book-store-nodejs.git
-    ```
+## Technology Stack
 
-2. Navigate to the project directory:
+- **Node.js** for backend runtime
+- **Express.js** for routing and server logic
+- **EJS** for dynamic page rendering
+- **MySQL** for database storage
+- **Sequelize** as ORM
+- **HTML, CSS, JavaScript** for frontend UI
+- **PayPal Sandbox** for payment gateway testing
+- **JWT Cookie Authentication** for secure login sessions
 
-    ```bash
-    cd book-store-nodejs
-    ```
+## Database Tables
 
-3. Install the required dependencies:
+The project uses these main database entities:
 
-    ```bash
-    npm install
-    ```
+- Users
+- Products
+- Carts
+- Cart Items
+- Orders
+- Order Items
+- Reviews
 
-## Usage
+## Environment Variables
 
-1. Create a `.env` file in the root directory of your project and configure your environment variables:
+Create a `.env` file in the project root:
 
-    ```plaintext
-    DB_NAME=your_db_name
-    DB_USER=your_db_user
-    DB_PASSWORD=your_db_password
-    DB_HOST=your_db_host
-    DB_DIALECT=mysql
-    PORT=5000
-    ```
+```env
+DB_SCHEMA_NAME=your_database_name
+DB_USER_NAME=your_database_user
+DB_USER_PASSWORD=your_database_password
+DB_HOST_URL=localhost
+PORT=5000
 
-2. Set up your MySQL database and update the configuration in the `util/database.js` file accordingly.
+JWT_SECRET=replace_with_a_long_random_secret
+DEFAULT_ADMIN_NAME=aayush
+DEFAULT_ADMIN_EMAIL=aayushkamboj400@gmail.com
+DEFAULT_ADMIN_PASSWORD=admin123
 
-3. Run the application:
+PAYPAL_CLIENT_ID=your_paypal_sandbox_client_id
+PAYPAL_CLIENT_SECRET=your_paypal_sandbox_secret
+PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com
+PAYPAL_CURRENCY=USD
 
-    ```bash
-    npm start
-    ```
-
-4. The application should now be running on `http://localhost:5000`.
-
-## Project Structure
-
-```plaintext
-nodejs-ecommerce-app/
-│
-├── controllers/
-│   ├── admin.js
-│   ├── error.js
-│   └── shop.js
-│
-├── models/
-│   ├── cart-item.js
-│   ├── cart.js
-│   ├── order-item.js
-│   ├── order.js
-│   ├── product.js
-│   └── user.js
-│
-├── public/
-│   ├── css/
-│   ├── js/
-│   └── images/
-│
-├── routes/
-│   ├── admin.js
-│   └── shop.js
-│
-├── views/
-│   ├── admin/
-│   ├── shop/
-│   ├── includes/
-│   └── error/
-│
-├── util/
-│   ├── database.js
-│
-├── app.js
-├── package.json
-├── .env
-└── README.md
+DB_SYNC_ALTER=true
 ```
 
-## Database Configuration
+Use `DB_SYNC_ALTER=true` once after adding new database fields. After the database is updated, set it to `false` or remove it.
 
-The application uses Sequelize ORM for database interactions. The database configuration is specified in the `util/database.js` file. Make sure to update this file with your MySQL database credentials.
+## Default Admin Login
 
-```javascript
-const Sequelize = require('sequelize');
-
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-  dialect: process.env.DB_DIALECT,
-  host: process.env.DB_HOST
-});
-
-module.exports = sequelize;
+```text
+Email: aayushkamboj400@gmail.com
+Password: admin123
 ```
 
+Change the password in `.env` before final deployment.
 
-## Contributing
+## How to Run
 
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements, bug fixes, or new features.
+Install dependencies:
 
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature-branch`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin feature-branch`)
-5. Create a new pull request
+```bash
+npm install
+```
 
-## License
+Start the project:
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+```bash
+npm start
+```
 
----
+Open the website:
 
-## Acknowledgements
+```text
+http://localhost:5000
+```
 
-This project was created by referring to the video guides provided by the Udemy course, [NodeJS - The Complete Guide (MVC, REST APIs, GraphQL, Deno)](https://www.udemy.com/course/nodejs-the-complete-guide), instructed by Maximilian Schwarzmüller. It is a great course that offers in-depth knowledge and practical insights into Node.js and its related technologies. Special thanks to Maximilian Schwarzmüller for his excellent tutorials and guidance.
+If port 5000 is already busy, run:
 
-Feel free to reach out if you have any questions or suggestions. Happy coding!
+```powershell
+$env:PORT='5001'; npm start
+```
 
+## Testing Checklist
 
+- Register a new customer account
+- Login as customer
+- Search and filter products
+- Add products to cart
+- Update cart quantity
+- Fill address form
+- Complete PayPal sandbox checkout
+- Confirm order appears in order history
+- Login as admin
+- Add/edit/delete products
+- Update product stock
+- Manage orders
+- View users
 
+## Project Objective
+
+The objective of this project is to build a practical online shopping system that demonstrates product management, customer authentication, cart handling, checkout, payment gateway integration, and order management using modern web development technologies.
+
+## Future Enhancements
+
+- Multiple payment gateways
+- Product recommendation system
+- Advanced analytics dashboard
+- Coupon and discount module
+- Delivery tracking module
+- Mobile application support
+
+## Conclusion
+
+BookStore successfully demonstrates the working of an e-commerce platform with customer and admin functionality. It covers the main requirements of an online shopping website, including product browsing, authentication, cart, checkout, payment, reviews, and order management.

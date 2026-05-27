@@ -5,30 +5,109 @@
 <body>
     <%- include('../includes/navigation.ejs') %>
 
-    <main>
-        <% if (prods.length > 0) { %>
-            <div class="grid">
-                <% for (let product of prods) { %>
-                    <article class="card product-item">
-                        <header class="card__header">
-                            <h1 class="product__title"><%= product.title %></h1>
-                        </header>
-                        <div class="card__image">
-                            <img src="<%= product.imageUrl %>"
-                                alt="<%= product.title %>">
-                        </div>
-                        <div class="card__content">
-                            <h2 class="product__price">$<%= product.price %></h2>
-                            <p class="product__description"><%= product.description %></p>
-                        </div>
-                        <div class="card__actions">
-                            <%- include('../includes/add-to-cart.ejs',  {product: product})  %>
-                        </div>
-                    </article>
+    <main class="home-page">
+        <section class="hero-slider" aria-label="BookStore highlights">
+            <article class="hero-slide active" style="background-image: linear-gradient(90deg, rgba(12, 31, 38, 0.82), rgba(12, 31, 38, 0.28)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1400&q=80');">
+                <div class="hero-slide__content">
+                    <span>College Project E-Commerce Store</span>
+                    <h1>Find books, essentials, and learning tools in one place.</h1>
+                    <p>Browse curated products, add them to your cart, checkout securely with PayPal sandbox, and track every order from your account.</p>
+                    <a class="btn hero-btn" href="/collections">Shop Collections</a>
+                </div>
+            </article>
+            <article class="hero-slide" style="background-image: linear-gradient(90deg, rgba(12, 31, 38, 0.82), rgba(12, 31, 38, 0.28)), url('https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1400&q=80');">
+                <div class="hero-slide__content">
+                    <span>Fast Search and Clean Cart</span>
+                    <h1>Search, compare, and checkout with a modern buying flow.</h1>
+                    <p>The store includes customer login, cart quantity controls, address collection, payment capture, and complete order history.</p>
+                    <a class="btn hero-btn" href="/signup">Create Account</a>
+                </div>
+            </article>
+            <article class="hero-slide" style="background-image: linear-gradient(90deg, rgba(12, 31, 38, 0.82), rgba(12, 31, 38, 0.28)), url('https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=1400&q=80');">
+                <div class="hero-slide__content">
+                    <span>Admin Ready</span>
+                    <h1>Manage products, stock, users, and orders from one panel.</h1>
+                    <p>Admins can add products, update inventory, monitor orders, and keep the catalogue ready for customers.</p>
+                    <a class="btn hero-btn" href="/admin/product-list">Admin Panel</a>
+                </div>
+            </article>
+            <div class="hero-slider__dots">
+                <button class="active" type="button" data-slide="0" aria-label="Show first slide"></button>
+                <button type="button" data-slide="1" aria-label="Show second slide"></button>
+                <button type="button" data-slide="2" aria-label="Show third slide"></button>
+            </div>
+        </section>
+
+        <section class="home-search">
+            <form class="product-filter" action="/" method="GET">
+                <input type="text" name="q" placeholder="Search by title, category, or description" value="<%= searchTerm || '' %>">
+                <select name="category">
+                    <option value="">All Categories</option>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category %>" <%= selectedCategory === category ? 'selected' : '' %>><%= category %></option>
+                    <% }) %>
+                </select>
+                <button class="btn" type="submit">Search</button>
+            </form>
+        </section>
+
+        <section class="category-section">
+            <div class="section-heading">
+                <span>Browse</span>
+                <h2>Popular Categories</h2>
+            </div>
+            <div class="category-grid">
+                <% if (categories.length > 0) { %>
+                    <% categories.slice(0, 6).forEach(category => { %>
+                    <a class="category-card" href="/collections?category=<%= encodeURIComponent(category) %>">
+                            <span><%= category.charAt(0).toUpperCase() %></span>
+                            <strong><%= category %></strong>
+                            <small>View products</small>
+                        </a>
+                    <% }) %>
+                <% } else { %>
+                    <% ['Books', 'Stationery', 'Academic', 'Fiction'].forEach(category => { %>
+                        <a class="category-card" href="/collections?category=<%= encodeURIComponent(category) %>">
+                            <span><%= category.charAt(0) %></span>
+                            <strong><%= category %></strong>
+                            <small>View products</small>
+                        </a>
+                    <% }) %>
                 <% } %>
             </div>
-        <% } else { %>
-            <h1>No Products Found!</h1>
-        <% } %>
+        </section>
+
+        <section class="featured-section">
+            <div class="section-heading">
+                <span>Recommended</span>
+                <h2>Featured Products</h2>
+            </div>
+            <% if (prods.length > 0) { %>
+                <div class="grid product-grid">
+                    <% for (let product of prods.slice(0, 8)) { %>
+                        <article class="card product-item">
+                            <a class="card__image" href="/products/<%= product.id %>">
+                                <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                            </a>
+                            <div class="card__content">
+                                <p class="product__meta"><%= product.category %> | Stock: <%= product.stock %></p>
+                                <h1 class="product__title"><%= product.title %></h1>
+                                <h2 class="product__price">$<%= Number(product.price).toFixed(2) %></h2>
+                                <p class="product__description"><%= product.description %></p>
+                            </div>
+                            <div class="card__actions">
+                                <a href="/products/<%= product.id %>" class="btn">Details</a>
+                                <%- include('../includes/add-to-cart.ejs',  {product: product})  %>
+                            </div>
+                        </article>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <div class="empty-products">
+                    <h2>No Products Found</h2>
+                    <p>Add products from the admin panel to display them here.</p>
+                </div>
+            <% } %>
+        </section>
     </main>
 <%- include('../includes/end.ejs') %>

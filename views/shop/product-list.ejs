@@ -6,6 +6,16 @@
         <%- include('../includes/navigation.ejs') %>
 
             <main>
+                <form class="product-filter" action="/product-list" method="GET">
+                    <input type="text" name="q" placeholder="Search products" value="<%= searchTerm || '' %>">
+                    <select name="category">
+                        <option value="">All Categories</option>
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category %>" <%= selectedCategory === category ? 'selected' : '' %>><%= category %></option>
+                        <% }) %>
+                    </select>
+                    <button class="btn" type="submit">Search</button>
+                </form>
                 <% if (prods.length > 0) { %>
                     <div class="grid">
                         <% for (let product of prods) { %>
@@ -22,6 +32,7 @@
                                     <h2 class="product__price">$
                                         <%= product.price %>
                                     </h2>
+                                    <p class="product__meta"><%= product.category %> | Stock: <%= product.stock %></p>
                                     <p class="product__description">
                                         <%= product.description %>
                                     </p>

@@ -9,7 +9,24 @@ const User = sequelize.define("user", {
     primaryKey: true,
   },
   name: Sequelize.STRING,
-  email: Sequelize.STRING,
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  passwordHash: Sequelize.STRING,
+  addressLine1: Sequelize.STRING,
+  addressLine2: Sequelize.STRING,
+  city: Sequelize.STRING,
+  state: Sequelize.STRING,
+  postalCode: Sequelize.STRING,
+  country: Sequelize.STRING,
+  phone: Sequelize.STRING,
+  isAdmin: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
 });
 
 module.exports = User;

@@ -1,6 +1,97 @@
 <%- include('../includes/head.ejs') %>
-</head>
+    <link rel="stylesheet" href="/css/cart.css">
+    </head>
 
-<body>
-    <%- include('../includes/navigation.ejs') %>
-    <%- include('../includes/end.ejs') %>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main class="cart-page">
+            <section class="checkout-layout">
+                <div class="checkout-main">
+                    <h1>Checkout</h1>
+                    <div class="address-review">
+                        <h2>Shipping To</h2>
+                        <p><strong><%= address.customerName %></strong></p>
+                        <p><%= address.addressLine1 %><% if (address.addressLine2) { %>, <%= address.addressLine2 %><% } %></p>
+                        <p><%= address.city %>, <%= address.state %> <%= address.postalCode %></p>
+                        <p><%= address.country %><% if (address.phone) { %> | <%= address.phone %><% } %></p>
+                        <form action="/address" method="GET">
+                            <button class="btn" type="submit">Edit Address</button>
+                        </form>
+                    </div>
+
+                    <ul class="cart__item-list compact">
+                        <% products.forEach(p => { %>
+                            <li class="cart__item">
+                                <img class="cart__image" src="<%= p.imageUrl %>" alt="<%= p.title %>">
+                                <div class="cart__details">
+                                    <h2><%= p.title %></h2>
+                                    <span>Qty: <%= p.cartItem.quantity %></span>
+                                </div>
+                                <div class="cart__price">
+                                    <strong>$<%= (p.price * p.cartItem.quantity).toFixed(2) %></strong>
+                                </div>
+                            </li>
+                        <% }) %>
+                    </ul>
+                </div>
+
+                <aside class="checkout-summary">
+                    <h2>Pay with PayPal</h2>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <strong>$<%= total.toFixed(2) %></strong>
+                    </div>
+                    <% if (paypalClientId) { %>
+                        <div id="paypal-button-container"></div>
+                        <p id="payment-message" class="payment-message"></p>
+                    <% } else { %>
+                        <p class="form-error">Add PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET to your .env file to enable sandbox checkout.</p>
+                    <% } %>
+                </aside>
+            </section>
+        </main>
+
+        <% if (paypalClientId) { %>
+            <script src="https://www.paypal.com/sdk/js?client-id=<%= paypalClientId %>&currency=<%= paypalCurrency %>"></script>
+            <script>
+                const shippingAddress = <%- JSON.stringify(address) %>;
+                const paymentMessage = document.getElementById("payment-message");
+
+                paypal.Buttons({
+                    createOrder: function () {
+                        return fetch("/paypal/create-order", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(shippingAddress)
+                        })
+                            .then(function (response) { return response.json(); })
+                            .then(function (order) {
+                                if (!order.id) {
+                                    throw new Error(order.message || "Unable to start PayPal checkout.");
+                                }
+                                return order.id;
+                            });
+                    },
+                    onApprove: function (data) {
+                        paymentMessage.textContent = "Capturing your payment...";
+                        return fetch("/paypal/capture-order", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(Object.assign({}, shippingAddress, { orderID: data.orderID }))
+                        })
+                            .then(function (response) { return response.json(); })
+                            .then(function (details) {
+                                if (details.redirectUrl) {
+                                    window.location.href = details.redirectUrl;
+                                    return;
+                                }
+                                throw new Error(details.message || "Payment capture failed.");
+                            });
+                    },
+                    onError: function (error) {
+                        paymentMessage.textContent = error.message || "PayPal checkout failed. Please try again.";
+                    }
+                }).render("#paypal-button-container");
+            </script>
+        <% } %>
+        <%- include('../includes/end.ejs') %>

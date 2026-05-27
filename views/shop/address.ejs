@@ -1,0 +1,69 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/cart.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+        <main class="cart-page">
+            <section class="checkout-layout">
+                <form class="address-form" action="/checkout" method="POST">
+                    <h1>Shipping Address</h1>
+                    <% if (errorMessage) { %>
+                        <p class="form-error"><%= errorMessage %></p>
+                    <% } %>
+                    <div class="form-control">
+                        <label for="customerName">Full Name</label>
+                        <input type="text" name="customerName" id="customerName" value="<%= address.customerName || '' %>" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="addressLine1">Address Line 1</label>
+                        <input type="text" name="addressLine1" id="addressLine1" value="<%= address.addressLine1 || '' %>" required>
+                    </div>
+                    <div class="form-control">
+                        <label for="addressLine2">Address Line 2</label>
+                        <input type="text" name="addressLine2" id="addressLine2" value="<%= address.addressLine2 || '' %>">
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-control">
+                            <label for="city">City</label>
+                            <input type="text" name="city" id="city" value="<%= address.city || '' %>" required>
+                        </div>
+                        <div class="form-control">
+                            <label for="state">State</label>
+                            <input type="text" name="state" id="state" value="<%= address.state || '' %>" required>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-control">
+                            <label for="postalCode">Postal Code</label>
+                            <input type="text" name="postalCode" id="postalCode" value="<%= address.postalCode || '' %>" required>
+                        </div>
+                        <div class="form-control">
+                            <label for="country">Country Code</label>
+                            <input type="text" name="country" id="country" maxlength="2" value="<%= address.country || 'US' %>" required>
+                        </div>
+                    </div>
+                    <div class="form-control">
+                        <label for="phone">Phone</label>
+                        <input type="text" name="phone" id="phone" value="<%= address.phone || '' %>">
+                    </div>
+                    <button class="btn checkout-btn" type="submit">Continue to Checkout</button>
+                </form>
+
+                <aside class="checkout-summary">
+                    <h2>Order Summary</h2>
+                    <% products.forEach(p => { %>
+                        <div class="summary-row">
+                            <span><%= p.title %> x <%= p.cartItem.quantity %></span>
+                            <strong>$<%= (p.price * p.cartItem.quantity).toFixed(2) %></strong>
+                        </div>
+                    <% }) %>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <strong>$<%= total.toFixed(2) %></strong>
+                    </div>
+                </aside>
+            </section>
+        </main>
+        <%- include('../includes/end.ejs') %>

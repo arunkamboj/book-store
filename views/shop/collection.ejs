@@ -1,0 +1,124 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+
+        <main class="collection-page">
+            <section class="collection-hero">
+                <div>
+                    <span>Shop by Collection</span>
+                    <h1>Find products by category, price, stock, and latest arrivals.</h1>
+                </div>
+                <p><%= totalProducts %> products found</p>
+            </section>
+
+            <section class="collection-layout">
+                <aside class="collection-filters">
+                    <h2>Filters</h2>
+                    <form action="/collections" method="GET">
+                        <div class="filter-control">
+                            <label for="q">Search</label>
+                            <input type="text" name="q" id="q" value="<%= searchTerm %>" placeholder="Book title or keyword">
+                        </div>
+
+                        <div class="filter-control">
+                            <label for="category">Category</label>
+                            <select name="category" id="category">
+                                <option value="">All Categories</option>
+                                <% categories.forEach(category => { %>
+                                    <option value="<%= category %>" <%= selectedCategory === category ? 'selected' : '' %>><%= category %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="filter-grid">
+                            <div class="filter-control">
+                                <label for="minPrice">Min Price</label>
+                                <input type="number" name="minPrice" id="minPrice" min="0" value="<%= minPrice %>">
+                            </div>
+                            <div class="filter-control">
+                                <label for="maxPrice">Max Price</label>
+                                <input type="number" name="maxPrice" id="maxPrice" min="0" value="<%= maxPrice %>">
+                            </div>
+                        </div>
+
+                        <div class="filter-control">
+                            <label for="stock">Availability</label>
+                            <select name="stock" id="stock">
+                                <option value="">All Products</option>
+                                <option value="in" <%= selectedStock === 'in' ? 'selected' : '' %>>In Stock Only</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-control">
+                            <label for="sort">Sort By</label>
+                            <select name="sort" id="sort">
+                                <option value="newest" <%= selectedSort === 'newest' ? 'selected' : '' %>>Newest First</option>
+                                <option value="price-low" <%= selectedSort === 'price-low' ? 'selected' : '' %>>Price: Low to High</option>
+                                <option value="price-high" <%= selectedSort === 'price-high' ? 'selected' : '' %>>Price: High to Low</option>
+                                <option value="name" <%= selectedSort === 'name' ? 'selected' : '' %>>Name A to Z</option>
+                                <option value="stock" <%= selectedSort === 'stock' ? 'selected' : '' %>>Highest Stock</option>
+                            </select>
+                        </div>
+
+                        <button class="btn collection-filter-btn" type="submit">Apply Filters</button>
+                        <a class="collection-reset" href="/collections">Reset</a>
+                    </form>
+                </aside>
+
+                <div class="collection-results">
+                    <div class="collection-toolbar">
+                        <div>
+                            <strong><%= totalProducts %></strong> result<%= totalProducts === 1 ? '' : 's' %>
+                            <% if (selectedCategory) { %>
+                                in <strong><%= selectedCategory %></strong>
+                            <% } %>
+                        </div>
+                        <div>Page <%= currentPage %> of <%= totalPages %></div>
+                    </div>
+
+                    <% if (prods.length > 0) { %>
+                        <div class="grid product-grid collection-grid">
+                            <% for (let product of prods) { %>
+                                <article class="card product-item">
+                                    <a class="card__image" href="/products/<%= product.id %>">
+                                        <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                                    </a>
+                                    <div class="card__content">
+                                        <p class="product__meta"><%= product.category %> | Stock: <%= product.stock %></p>
+                                        <h1 class="product__title"><%= product.title %></h1>
+                                        <h2 class="product__price">$<%= Number(product.price).toFixed(2) %></h2>
+                                        <p class="product__description"><%= product.description %></p>
+                                    </div>
+                                    <div class="card__actions">
+                                        <a href="/products/<%= product.id %>" class="btn">Details</a>
+                                        <%- include('../includes/add-to-cart.ejs',  {product: product}) %>
+                                    </div>
+                                </article>
+                            <% } %>
+                        </div>
+
+                        <nav class="pagination" aria-label="Collection pagination">
+                            <% if (hasPreviousPage) { %>
+                                <a href="<%= previousPageUrl %>">Previous</a>
+                            <% } %>
+                            <% pageUrls.forEach(page => { %>
+                                <a class="<%= page.number === currentPage ? 'active' : '' %>" href="<%= page.url %>"><%= page.number %></a>
+                            <% }) %>
+                            <% if (hasNextPage) { %>
+                                <a href="<%= nextPageUrl %>">Next</a>
+                            <% } %>
+                        </nav>
+                    <% } else { %>
+                        <div class="empty-products">
+                            <h2>No products match these filters</h2>
+                            <p>Try changing the category, price range, or search keyword.</p>
+                            <a class="btn" href="/collections">View All Products</a>
+                        </div>
+                    <% } %>
+                </div>
+            </section>
+        </main>
+        <%- include('../includes/end.ejs') %>

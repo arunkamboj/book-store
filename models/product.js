@@ -10,9 +10,19 @@ const Product = sequelize.define("product", {
     primaryKey: true,
   },
   title: Sequelize.STRING,
+  category: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    defaultValue: "Books",
+  },
   price: {
     type: Sequelize.DOUBLE,
     allowNull: false,
+  },
+  stock: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 10,
   },
   imageUrl: {
     type: Sequelize.STRING,

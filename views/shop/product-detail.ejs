@@ -1,4 +1,6 @@
 <%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/product.css">
 </head>
 
 <body>
@@ -10,7 +12,49 @@
             <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
         </div>
         <h2><%= product.price %></h2>
+        <p><%= product.category %> | Stock: <%= product.stock %></p>
         <p><%= product.description %></p>
-        <%- include('../includes/add-to-cart.ejs') %>
+        <% if (product.stock > 0) { %>
+            <%- include('../includes/add-to-cart.ejs') %>
+        <% } else { %>
+            <p>Out of stock</p>
+        <% } %>
+
+        <section class="reviews">
+            <h2>Customer Reviews</h2>
+            <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn) { %>
+                <form class="review-form" action="/products/<%= product.id %>/reviews" method="POST">
+                    <div class="form-control">
+                        <label for="rating">Rating</label>
+                        <select name="rating" id="rating">
+                            <% [5,4,3,2,1].forEach(rating => { %>
+                                <option value="<%= rating %>"><%= rating %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label for="comment">Review</label>
+                        <textarea name="comment" id="comment" rows="3" required></textarea>
+                    </div>
+                    <button class="btn" type="submit">Submit Review</button>
+                </form>
+            <% } else { %>
+                <p><a href="/login?returnTo=/products/<%= product.id %>">Login</a> to write a review.</p>
+            <% } %>
+
+            <% if (reviews.length === 0) { %>
+                <p>No reviews yet.</p>
+            <% } else { %>
+                <ul class="review-list">
+                    <% reviews.forEach(review => { %>
+                        <li>
+                            <strong><%= review.user ? review.user.name : 'Customer' %></strong>
+                            <span><%= review.rating %>/5</span>
+                            <p><%= review.comment %></p>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } %>
+        </section>
     </main>
     <%- include('../includes/end.ejs') %>

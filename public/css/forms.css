@@ -21,3 +21,11 @@
 .form-control textarea:focus {
   outline-color: #00695c;
 }
+
+.form-error {
+  color: #b3261e;
+}
+
+.auth-switch {
+  margin-top: 1rem;
+}
